@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pintu Masuk Nusantara — Pariwisata Indonesia (data BPS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Palet Okabe-Ito (aman untuk buta warna); varian "-t" lebih gelap khusus untuk teks kecil (kontras >= 4,5:1) */
+  :root { color-scheme: light; --ink:#18222f; --muted:#4f5b6b; --line:#d9dee6; --bg:#f7f5f0; --navy:#14213d;
+    --blue:#0072B2; --sky:#56B4E9; --green:#009E73; --orange:#E69F00; --verm:#D55E00; --pink:#CC79A7; --gray:#7a8aa0;
+    --verm-t:#A84300; --green-t:#007A5A; --blue-t:#005A8D;
+    --serif:"Fraunces",Georgia,"Times New Roman",serif; --sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin:0; font:17px/1.6 var(--sans); color:var(--ink); background:var(--bg); }
+  h1,h2 { font-family:var(--serif); line-height:1.15; letter-spacing:-.01em; }
+  p.note { color:var(--muted); font-size:.86rem; line-height:1.45; margin:4px 0 8px; }
+  .hero { min-height:100vh; display:flex; flex-direction:column; justify-content:center; color:#fff; padding:40px 24px;
+    background:radial-gradient(1200px 500px at 85% -10%,rgba(86,180,233,.28),transparent 60%),linear-gradient(160deg,#14213d 0%,#0b3a5a 100%); }
+  .hero-in { max-width:820px; margin:0 auto; }
+  .kicker { font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:.8rem; color:#F2C14E; margin:0 0 14px; }
+  .hero h1 { font-size:clamp(2.6rem,7vw,4.6rem); font-weight:800; margin:0 0 18px; }
+  .hero .lead { font-size:1.25rem; line-height:1.6; color:#e8eef6; margin:0 0 14px; }
+  .stripe { display:flex; height:6px; max-width:240px; margin:26px 0; border-radius:3px; overflow:hidden; }
+  .stripe i { flex:1; }
+  .cue { display:inline-block; margin-top:12px; color:#fff; font-weight:700; border-bottom:2px solid #F2C14E; text-decoration:none; padding-bottom:2px; }
+  .chapter { max-width:1280px; margin:0 auto; padding:80px 20px 0; }
+  .chapter > div { border-top:4px solid var(--ink); padding-top:16px; max-width:760px; }
+  .chapter .tag { font-weight:700; letter-spacing:.1em; text-transform:uppercase; font-size:.78rem; color:var(--blue-t); }
+  .chapter h2 { font-size:clamp(1.7rem,3.5vw,2.4rem); margin:4px 0 8px; }
+  .chapter p { color:var(--muted); font-size:1.08rem; margin:0; }
+  .story { display:grid; grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr); gap:40px; max-width:1280px; margin:0 auto; padding:0 20px; align-items:start; }
+  .stage { position:sticky; top:0; height:100vh; padding:18px 0 14px; display:flex; flex-direction:column; justify-content:center; min-width:0; }
+  .stage h2 { font-size:1.55rem; margin:0 0 2px; }
+  .eyebrow { font-weight:700; font-size:.74rem; letter-spacing:.1em; text-transform:uppercase; color:var(--blue-t); }
+  .source { font-size:.74rem; color:var(--muted); line-height:1.4; margin:6px 0 0; }
+  .source b { color:var(--ink); }
+  .steps { padding-bottom:25vh; }
+  .step { min-height:90vh; display:flex; align-items:center; }
+  .card { background:#fff; border:1px solid var(--line); border-left:6px solid var(--line); border-radius:12px; padding:18px 20px; font-size:1.04rem;
+    box-shadow:0 1px 3px rgba(0,0,0,.05); opacity:.5; transition:opacity .3s,transform .3s,border-color .3s,box-shadow .3s; }
+  .step.on .card { opacity:1; border-left-color:var(--blue); transform:translateX(-4px); box-shadow:0 8px 22px rgba(20,33,61,.13); }
+  .card b { color:var(--ink); }
+  .ctl { display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; margin:4px 0 6px; font-size:.88rem; }
+  select { font:inherit; padding:3px 6px; border:1px solid #9aa5b5; border-radius:6px; background:#fff; color:var(--ink); }
+  svg { width:100%; height:auto; max-height:calc(100vh - 300px); display:block; background:#fff; border:1px solid var(--line); border-radius:10px; }
+  svg text { font-family:inherit; fill:var(--ink); }
+  .tip { position:absolute; pointer-events:none; opacity:0; background:#14213d; color:#fff; padding:6px 9px; border-radius:6px; font-size:.82rem; line-height:1.4; z-index:10; max-width:260px; }
+  #v2 { position:relative; width:100%; border:1px solid var(--line); border-radius:10px; background:#fff; overflow:hidden; transition:none; }
+  .tile { position:absolute; overflow:hidden; padding:4px 6px; font-size:.75rem; line-height:1.25; border:1px solid #fff; transition:opacity .35s; }
+  #v2bc { margin:2px 0; font-size:.85rem; }
+  #v2bc span { cursor:pointer; color:var(--blue-t); text-decoration:underline; }
+  #v2bc span + span::before { content:" › "; color:var(--muted); text-decoration:none; display:inline-block; }
+  .sel { stroke:#000; stroke-width:2.5px; }
+  .err { background:#fde8e8; color:#8a1c1c; padding:10px 14px; border-radius:8px; margin:12px 16px; }
+  .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:4px 0 8px; }
+  .kpi { background:#fff; border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:.78rem; color:var(--muted); line-height:1.35; }
+  .kpi b { display:block; font:800 1.2rem var(--serif); color:var(--ink); }
+  .kpi.down b { color:var(--verm-t); } .kpi.up b { color:var(--green-t); }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin:4px 0; font-size:.82rem; }
+  .chip { display:inline-flex; align-items:center; gap:6px; padding:2px 10px; border:1px solid #9aa5b5; border-radius:999px; background:#fff; cursor:pointer; font:inherit; color:var(--ink); }
+  .chip i { width:11px; height:11px; border-radius:50%; display:inline-block; }
+  .chip:hover { border-color:#444; } .chip.on { border-color:var(--ink); box-shadow:0 0 0 1px var(--ink); font-weight:700; }
+  .brush .selection { fill:#0072B2; fill-opacity:.12; stroke:#0072B2; stroke-opacity:.8; }
+  footer { max-width:880px; margin:40px auto 0; padding:32px 20px 60px; border-top:1px solid var(--line); font-size:.9rem; color:var(--muted); }
+  .closing { margin-top:90px; color:#fff; padding:70px 24px 80px;
+    background:radial-gradient(1000px 420px at 10% -10%,rgba(86,180,233,.25),transparent 60%),linear-gradient(160deg,#14213d 0%,#0b3a5a 100%); }
+  .closing-in { max-width:1080px; margin:0 auto; }
+  .closing .kicker { font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:.8rem; color:#F2C14E; margin:0 0 10px; }
+  .closing h2 { font-size:clamp(2rem,4.5vw,3.1rem); font-weight:800; margin:0 0 14px; }
+  .closing .lead { font-size:1.15rem; color:#e8eef6; max-width:760px; margin:0 0 30px; }
+  .cgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
+  .ccard { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); border-left:6px solid var(--c); border-radius:12px; padding:16px 18px; }
+  .ccard h3 { font-family:var(--serif); font-size:1.15rem; margin:0 0 6px; color:#fff; }
+  .ccard p { margin:0; font-size:1rem; line-height:1.55; color:#eef3f9; }
+  .ccard b { color:#fff; }
+  footer h3 { font-family:var(--serif); color:var(--ink); margin:20px 0 6px; }
+  .sw { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+  .sw span { display:inline-flex; align-items:center; gap:6px; font-size:.82rem; }
+  .sw i { width:16px; height:16px; border-radius:3px; display:inline-block; border:1px solid rgba(0,0,0,.15); }
+  footer a { color:var(--blue-t); }
+  @media (max-width:900px) {
+    .story { display:block; padding:0 14px; }
+    .stage { height:auto; max-height:56vh; overflow:hidden; background:var(--bg); z-index:5; padding:8px 0; justify-content:flex-start; }
+    .stage .note, .stage .ctl, .stage .kpis, .stage .eyebrow { display:none; }
+    svg { max-height:calc(56vh - 110px); }
+    .step { min-height:75vh; align-items:flex-end; }
+    .kpis { grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .card, .tile { transition:none; } .step.on .card { transform:none; } }
+</style>
+</head>
+<body>
+<header class="hero"><div class="hero-in">
+  <p class="kicker">Data story · BPS</p>
+  <h1>Profil Pariwisata Indonesia</h1>
+  <p class="lead">Industri pariwisata Indonesia telah melewati masa-masa yang penuh dinamika. Setelah sempat terhenti akibat keterbatasan mobilitas global, kini sektor pariwisata kembali bergerak pesat. Namun, siapakah sebenarnya yang menghidupkan kembali denyut pariwisata kita? Dari mana para wisatawan datang, melalui jalur mana mereka masuk, dan bagaimana warga lokal sendiri menjelajahi keindahan negerinya? Mari kita telusuri cerita di balik angka dan data pariwisata Indonesia.</p>
+  <div class="stripe" aria-hidden="true"><i style="background:#0072B2"></i><i style="background:#56B4E9"></i><i style="background:#009E73"></i><i style="background:#E69F00"></i><i style="background:#D55E00"></i><i style="background:#CC79A7"></i></div>
+  <a class="cue" href="#bab1">Gulir untuk memulai ↓</a>
+</div></header>
+
+<main>
+<div class="chapter" id="bab1"><div><span class="tag">Bab 1</span><h2>Wisatawan mancanegara: siapa yang kembali?</h2><p>Kunjungan wisman sebelum, selama, dan sesudah pandemi.</p></div></div>
+
+<section class="story" id="s1">
+  <div class="stage">
+    <span class="eyebrow">Grafik 1</span><h2>Pariwisata Indonesia Bangkit Kembali Setelah Terpuruk di Masa Pandemi</h2>
+    <p class="note">Pita oranye = pandemi COVID-19 (Mar 2020 - Des 2021), pita hijau = pemulihan sejak 2022. Arahkan kursor untuk melihat angka dan perubahan dibanding bulan yang sama tahun lalu.</p>
+    <div class="ctl"><label>Tampilan <select id="w1m"></select></label></div>
+    <div id="w1kpi" class="kpis"></div>
+    <div id="w1"></div>
+    <p class="source">Sumber<br>Statistik Kunjungan Wisatawan Mancanegara 2025 (BPS, 2026)</p>
+  </div>
+  <div class="steps">
+    <div class="step" data-fn='["w1","Bulanan","2015-01-01","2019-12-31"]'><div class="card"><b>2015 sampai 2019.</b> Kunjungan wisman naik dari tahun ke tahun, dengan naik-turun musiman yang berulang. Pada 2019 jumlahnya mencapai <b>{{a2019}}</b>, angka acuan untuk seluruh cerita ini.</div></div>
+    <div class="step" data-fn='["w1","Bulanan","2020-03-01","2021-12-31"]'><div class="card"><b>Maret 2020.</b> Perbatasan menutup dan kurva runtuh dalam hitungan bulan. Titik terendah tercatat pada <b>{{troughMonth}}</b> dengan {{troughMonthVal}} kunjungan. Total setahun {{troughYear}} hanya <b>{{trough}}</b>, turun {{dropPct}} dari 2019.</div></div>
+    <div class="step" data-fn='["w1","Bulanan","2022-01-01","2025-12-31"]'><div class="card"><b>2022 sampai 2025.</b> Pemulihan berjalan bertahap. Tahun 2025 mencatat <b>{{a2025}}</b>, atau {{ratio}} dari level 2019: {{gapWord}}.</div></div>
+    <div class="step" data-fn='["w1","Tahunan"]'><div class="card"><b>Per tahun,</b> ceritanya sama: jatuh tajam pada 2020-2021, lalu naik tiap tahun. Pertanyaan berikutnya: <b>dari mana</b> wisatawan yang kembali itu datang?</div></div>
+  </div>
+</section>
+
+<section class="story" id="s2">
+  <div class="stage">
+    <span class="eyebrow">Grafik 2</span><h2>Asal Negara Wisman</h2>
+    <p class="note">Garis menunjukkan arah dari negara asal (titik di ibu kota, aproksimasi) menuju Indonesia. Tebal garis = jumlah kunjungan, warna = kawasan asal.</p>
+    <div class="ctl">
+      <label>Tahun <select id="w2y"></select></label>
+      <label>Kawasan asal <select id="w2r"></select></label>
+      <label>Tampilkan <select id="w2n"></select> negara teratas</label>
+    </div>
+    <div id="w2"></div>
+    <p class="note" id="w2note"></p>
+    <p class="source"><b>Sumber:</b><br>Statistik Kunjungan Wisatawan Mancanegara 2025 (BPS, 2026)</p>
+  </div>
+  <div class="steps">
+    <div class="step" data-fn='["w2","Semua kawasan",20]'><div class="card">Pada {{w2year}}, tiga negara asal terbesar yang dapat dipetakan adalah <b>{{w2top}}</b>. {{w2top1}} saja menyumbang {{w2top1sh}} dari seluruh wisman. Semakin tebal garisnya, semakin banyak yang datang.</div></div>
+    <div class="step" data-fn='["w2","ASEAN",10]'><div class="card"><b>Tetangga dekat memegang volume.</b> Wisman ASEAN menyumbang {{aseanShare}}, dipimpin {{aseanTop}}. Jalur masuk mereka tidak sama dengan wisman jarak jauh; kita buktikan di grafik 3.</div></div>
+    <div class="step" data-fn='["w2","Asia (di luar ASEAN)",10]'><div class="card"><b>Asia di luar ASEAN</b> menyumbang {{asiaShare}}, dengan pasar terbesar {{asiaTop}}. Dari timur laut dan barat, garisnya bertemu di titik yang sama: Indonesia.</div></div>
+    <div class="step" data-fn='["w2","Eropa",10]'><div class="card"><b>Jarak jauh tidak menghalangi.</b> Eropa menyumbang {{eropaShare}}, dipimpin {{eropaTop}}. Apakah mereka juga tiba lewat pintu yang sama? Itu yang kita lihat berikutnya.</div></div>
+  </div>
+</section>
+
+<section class="story" id="s3">
+  <div class="stage">
+    <span class="eyebrow">Grafik 3</span><h2>Pintu Masuk Wisman</h2>
+    <p class="note">Lingkaran tengah = total wisman, cincin tengah = jenis pintu (udara, laut, darat), cincin luar = tiap bandara, pelabuhan, atau pos lintas batas.</p>
+    <div class="ctl">
+      <label>Kawasan asal <select id="sbr"></select></label>
+      <label>Negara asal <select id="sbn"></select></label>
+    </div>
+    <div id="sb"></div>
+    <p id="sbnarr" style="display:none"></p>
+    <p class="note" id="sbnote"></p>
+    <p class="source"><b>Sumber:</b><br>Statistik Kunjungan Wisatawan Mancanegara 2025 (BPS, 2026)</p>
+  </div>
+  <div class="steps">
+    <div class="step" data-fn='["sb","all"]'><div class="card">Menyatukan semua negara, <b>{{airShare}}</b> wisman tiba lewat udara. Satu pintu menonjol: <b>{{topGate}}</b> menerima {{topGateShare}} dari seluruh wisman, disusul {{gate2}} ({{gate2Share}}).</div></div>
+    <div class="step" data-fn='["sb","laut"]'><div class="card"><b>Tapi tidak semua lewat udara.</b> Ambil wisman asal {{seaName}}: {{seaShare}} masuk lewat pelabuhan, paling banyak di {{seaPort}} ({{seaPortShare}} dari kunjungan mereka). Cocok dengan peta tadi: negara tetangga punya jalur laut yang dekat.</div></div>
+    <div class="step" data-fn='["sb","darat"]'><div class="card"><b>Pintu darat melayani cerita lain.</b> Wisman asal {{landName}} paling banyak masuk lewat pos lintas batas: {{landShare}} dari kunjungan mereka, terbesar di {{landPost}}.</div></div>
+    <div class="step" data-fn='["sb","bali"]'><div class="card"><b>Bagaimana dengan Bali?</b> Wisman asal {{baliName}} masuk terutama lewat {{baliGate}} ({{baliShare}} dari kunjungan mereka). Sekarang kita tahu dari mana mereka datang dan lewat mana mereka masuk; tinggal melihat paspor apa yang mereka pegang.</div></div>
+  </div>
+</section>
+
+<section class="story" id="s4">
+  <div class="stage">
+    <span class="eyebrow">Grafik 4</span><h2>Proporsi Asal Negara</h2>
+    <p class="note">Ukuran kotak = jumlah kunjungan menurut paspor yang dipegang, warna = kawasan asal (lihat legenda). Tahun berjalan dihitung dari Januari sampai bulan terakhir yang tersedia.</p>
+    <div class="ctl"><label>Tahun <select id="v2y"></select></label></div>
+    <div id="v2leg"></div>
+    <div id="v2bc"></div>
+    <div id="v2"></div>
+    <p class="source"><b>Sumber:</b><br>Statistik Kunjungan Wisatawan Mancanegara 2025 (BPS, 2026)</p>
+  </div>
+  <div class="steps">
+    <div class="step" data-fn='["v2",null]'><div class="card">Dalam angka {{v2Year}}, <b>{{tmTop1}}</b> menjadi pemegang paspor terbesar ({{tmTop1Sh}} dari total). Luas kotak mengikuti jumlah kunjungan, jadi peta tadi kini terbaca sebagai area.</div></div>
+    <div class="step" data-fn='["v2","ASEAN"]'><div class="card"><b>ASEAN</b> mengisi {{tmAsean}} luas, dengan {{tmAseanTop}} di depan. Kotak-kotak hijau ini cocok dengan garis hijau tebal di peta.</div></div>
+    <div class="step" data-fn='["v2","Asia (di luar ASEAN)"]'><div class="card"><b>Asia di luar ASEAN</b> mengisi {{tmAsia}}: {{tmAsiaTop}} adalah tiga paspor terbesarnya.</div></div>
+    <div class="step" data-fn='["v2","Eropa"]'><div class="card"><b>Eropa</b> mengisi {{tmEropa}}. Sebarannya terbagi pada banyak negara, dipimpin {{tmEropaTop}}, masing-masing dengan kotak yang jauh lebih kecil.</div></div>
+  </div>
+</section>
+
+<div class="chapter" id="bab2"><div><span class="tag">Bab 2</span><h2>Wisatawan nusantara</h2><p>Di balik pintu-pintu internasional itu, orang Indonesia sendiri berpindah antarprovinsi dalam jumlah yang jauh lebih besar.</p></div></div>
+
+<section class="story" id="s5">
+  <div class="stage">
+    <span class="eyebrow">Grafik 5</span><h2>Neraca Wisatawan Nusantara</h2>
+    <p class="note">Selisih = perjalanan dengan tujuan provinsi itu dikurangi perjalanan yang berasal dari provinsi itu. Biru = lebih banyak menerima, oranye = lebih banyak mengirim. Klik batang untuk menyorot provinsi.</p>
+    <div class="ctl">
+      <label>Tahun <select id="v3y"></select></label>
+      <label>Ukuran <select id="v3m">
+        <option value="net">Selisih tujuan − asal</option>
+        <option value="t">Jumlah perjalanan tujuan</option>
+        <option value="a">Jumlah perjalanan asal</option></select></label>
+      <label>Tampilan <select id="v3s">
+        <option value="top">5 tertinggi &amp; 5 terendah</option>
+        <option value="all">Semua provinsi</option></select></label>
+    </div>
+    <div id="v3"></div>
+    <p class="note" id="v3n"></p>
+    <p class="source"><b>Sumber:</b><br>Statistik Wisatawan Nusantara 2025 (BPS, 2026)</p>
+  </div>
+  <div class="steps">
+    <div class="step" data-fn='["v3","net","top"]'><div class="card">Pada {{v3Year}}, penerima bersih terbesar adalah <b>{{netTop3}}</b>; {{netTop1}} unggul {{netTopV}} juta perjalanan. Di ujung lain, pengirim bersih terbesar adalah <b>{{netBot3}}</b>; {{netBot1}} defisit {{netBotV}} juta.</div></div>
+    <div class="step" data-fn='["v3","t","top"]'><div class="card">Dari sisi <b>tujuan</b> saja, volume kasarnya berbeda: provinsi yang paling banyak dituju adalah {{tujTop3}}.</div></div>
+    <div class="step" data-fn='["v3","a","top"]'><div class="card">Dari sisi <b>asal</b>, provinsi yang paling banyak mengirim warganya adalah {{asalTop3}}. Provinsi berpenduduk besar wajar mengirim banyak; yang menentukan label penerima atau pengirim adalah selisihnya.</div></div>
+    <div class="step" data-fn='["v3","net","all"]'><div class="card">Bila seluruh {{v3N}} provinsi ditampilkan, hanya segelintir yang menanggung selisih sangat besar di kedua ujung; sisanya jauh lebih dekat ke nol. Klik sebuah batang untuk menyorotnya.</div></div>
+  </div>
+</section>
+
+<section class="story" id="s6">
+  <div class="stage">
+    <span class="eyebrow">Grafik 6</span><h2>Karakteristik Perjalanan Wisnus</h2>
+    <p class="note">Alur dari provinsi asal ke maksud utama perjalanan, lalu ke jenis kelamin wisatawan nusantara, 2025. Pembagian laki-laki/perempuan hanya tersedia per provinsi asal.</p>
+    <div class="ctl">
+      <label>Provinsi asal <select id="skp"></select></label>
+      <label>Ukuran alur <select id="skm">
+        <option value="trips">Perkiraan jumlah perjalanan</option>
+        <option value="pct">Persentase (tiap provinsi sama besar)</option></select></label>
+    </div>
+    <div id="sk"></div>
+    <p class="note" id="sknote"></p>
+    <p class="source"><b>Sumber:</b><br>Statistik Wisatawan Nusantara 2025 (BPS, 2026)</p>
+  </div>
+  <div class="steps">
+    <div class="step" data-fn='["sk","trips","all"]'><div class="card">Kita ikuti perjalanan itu sampai maksudnya. Setiap alur berawal dari <b>provinsi asal</b>, melewati <b>maksud utama</b> perjalanan, dan berakhir pada <b>jenis kelamin</b> pelancong.</div></div>
+    <div class="step" data-fn='["sk","trips","top"]'><div class="card">Fokus ke <b>{{skTop}}</b>, pengirim terbanyak dengan sekitar {{skTopTrips}} juta perjalanan. Lihat maksud mana yang paling tebal pada alurnya.</div></div>
+    <div class="step" data-fn='["sk","pct","all"]'><div class="card">Dalam <b>persentase</b>, tiap provinsi sama besar sehingga komposisi maksud bisa dibandingkan tanpa terpengaruh jumlah penduduk. Provinsi mana yang berbeda dari yang lain? Itu pertanyaan bab terakhir.</div></div>
+  </div>
+</section>
+
+<section class="story" id="s7">
+  <div class="stage">
+    <span class="eyebrow">Grafik 7</span><h2>Pengelompokan Provinsi</h2>
+    <p class="note">Warna = klaster k-means, ukuran titik = jumlah penduduk (SUPAS 2025). Panah = arah naiknya tiap variabel. Seret kotak untuk memilih sekelompok provinsi (<i>brushing</i>); pilihan ikut tersorot di grafik 8 (<i>linking</i>).</p>
+    <div class="ctl">
+      <label>Sumbu X <select id="mvx"></select></label>
+      <label>Sumbu Y <select id="mvy"></select></label>
+      <label><input type="checkbox" id="mvar" checked> Panah variabel</label>
+    </div>
+    <div class="chips" id="mvleg"></div>
+    <div id="mvbi"></div>
+    <p class="note" id="mvsel"></p>
+    <p class="source"><b>Sumber:</b><br>Statistik Wisatawan Nusantara 2025 (BPS, 2026)<br>Jumlah Akomodasi, Kamar, dan Tempat Tidur yang Tersedia pada Hotel Bintang dan Hotel Nonbintang 2025 (BPS, 2026)<br>Tingkat Penghunian Kamar (TPK) Hotel Bintang dan Nonbintang 2025 (BPS, 2026)<br>Rata-Rata Lama Menginap Tamu pada Hotel Bintang dan Nonbintang Menurut Provinsi 2025 (BPS, 2026)<br>Survei Penduduk Antar Sensus (SUPAS) 2025 (BPS, 2026)</p>
+  </div>
+  <div class="steps" id="mvsteps7"></div>
+</section>
+
+<section class="story" id="s8">
+  <div class="stage">
+    <span class="eyebrow">Grafik 8</span><h2>Profil Lengkap Provinsi</h2>
+    <p class="note">Satu garis = satu provinsi, satu sumbu = satu variabel (skala dari terkecil ke terbesar; pengeluaran memakai skala logaritmik). Seret rentang pada sumbu untuk menyaring.</p>
+    <div class="ctl">
+      <label>Urutan sumbu <select id="mvo">
+        <option value="pc1">Menurut muatan PC1</option>
+        <option value="tema">Menurut kelompok tema</option></select></label>
+    </div>
+    <div id="mvpc"></div>
+    <p class="source"><b>Sumber:</b><br>Statistik Wisatawan Nusantara 2025 (BPS, 2026)<br>Jumlah Akomodasi, Kamar, dan Tempat Tidur yang Tersedia pada Hotel Bintang dan Hotel Nonbintang 2025 (BPS, 2026)<br>Tingkat Penghunian Kamar (TPK) Hotel Bintang dan Nonbintang 2025 (BPS, 2026)<br>Rata-Rata Lama Menginap Tamu pada Hotel Bintang dan Nonbintang Menurut Provinsi 2025 (BPS, 2026)<br>Survei Penduduk Antar Sensus (SUPAS) 2025 (BPS, 2026)</p>
+  </div>
+  <div class="steps" id="mvsteps8"></div>
+</section>
+</main>
+
+<section class="closing" id="kesimpulan">
+  <div class="closing-in">
+    <p class="kicker">Kesimpulan</p>
+    <h2>Pariwisata pulih, tetapi tidak merata</h2>
+    <p class="lead">Dari kurva yang runtuh pada 2020 sampai profil tiap provinsi, satu pola berulang: pergerakan wisatawan bertumpu pada pasar, pintu, dan provinsi tertentu.</p>
+    <div class="cgrid">
+      <div class="ccard" style="--c:#56B4E9"><h3>1. Pemulihan nyata</h3><p>Kunjungan wisman 2025 mencapai <b>{{a2025}}</b>, atau <b>{{ratio}}</b> dari level 2019 ({{a2019}}); {{gapWord}}. Titik terendah ({{troughYear}}) hanya {{trough}}.</p></div>
+      <div class="ccard" style="--c:#E69F00"><h3>2. Asal wisman terkonsentrasi</h3><p>Pada {{w2year}}, asal terbesar yang dapat dipetakan adalah {{w2top}}. ASEAN menyumbang {{aseanShare}} dari seluruh wisman, dan menurut paspor, {{tmTop1}} menjadi yang terbesar.</p></div>
+      <div class="ccard" style="--c:#009E73"><h3>3. Pintu masuk menentukan jalur</h3><p>Sebanyak <b>{{airShare}}</b> wisman tiba lewat udara, dan <b>{{topGate}}</b> sendirian menerima {{topGateShare}}. Pelabuhan dan pos darat melayani pasar tetangga, misalnya wisman asal {{seaName}} dan {{landName}}.</p></div>
+      <div class="ccard" style="--c:#CC79A7"><h3>4. Wisatawan nusantara berpusat</h3><p>Pada {{v3Year}}, {{netTop3}} menerima lebih banyak perjalanan daripada yang dikirim, sedangkan {{netBot3}} lebih banyak mengirim. Pengirim terbanyak: {{skTop}}.</p></div>
+      <div class="ccard" style="--c:#D55E00"><h3>5. Provinsi tidak seragam</h3><p>Provinsi terbagi dalam <b>{{kc}} klaster</b> berdasarkan profil pariwisatanya. Provinsi pencilan: {{outNames}}; pola umum tidak otomatis berlaku bagi mereka.</p></div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-sankey/0.12.3/d3-sankey.min.js"></script>
+<script>
+const W = 900;
+const nf = n => d3.format(",")(Math.round(n)).replace(/,/g, ".");
+const tip = d3.select("body").append("div").attr("class", "tip");
+const showTip = (e, html) => tip.style("opacity", 1).html(html).style("left", (e.pageX + 12) + "px").style("top", (e.pageY + 12) + "px");
+const hideTip = () => tip.style("opacity", 0);
+const state = { sel: null };
+const STEP = {}, NUM = {};                                   // STEP = pengait tiap grafik untuk narasi scroll, NUM = angka yang dihitung dari data
+const TXT = { pandemi: "#A84300", pulih: "#007A5A" };        // varian gelap untuk teks kecil (kontras >= 4,5:1)
+const lj = l => l.length > 1 ? l.slice(0, -1).join(", ") + " dan " + l[l.length - 1] : (l[0] || "-");
+const jt1 = v => (v < 0 ? "−" : "") + (Math.abs(v) / 1e6).toFixed(1).replace(".", ",");
+const tc = s => String(s).toLowerCase().replace(/(^|[\s(])\S/g, c => c.toUpperCase()).replace(/\bDi\b/, "DI").replace(/\bDki\b/, "DKI");
+const idLoc = d3.timeFormatLocale({ dateTime: "%A, %e %B %Y", date: "%d/%m/%Y", time: "%H:%M:%S", periods: ["AM", "PM"],
+  days: ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"], shortDays: ["Min","Sen","Sel","Rab","Kam","Jum","Sab"],
+  months: ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"],
+  shortMonths: ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"] });
+function pick(p) {                                   // sorot provinsi di semua grafik
+  state.sel = state.sel === p ? null : p;
+  d3.selectAll("[data-p]").classed("sel", function () { return this.dataset.p === state.sel; });
+}
+const fill = (sel, items, def) => { sel.selectAll("option").data(items).join("option").attr("value", d => d).text(d => d); if (def != null) sel.property("value", def); };
+
+// ---- helper periode: tahun berjalan dihitung sampai bulan terakhir yang ada datanya
+const yearsOf = ms => [...new Set(ms.map(m => +m.slice(0, 4)))];
+const okOf = (ms, rows, get) => ms.map((_, i) => rows.some(r => get(r)[i] != null));
+const cutOf = (ms, ok, y) => d3.max(d3.range(ms.length).filter(i => +ms[i].slice(0, 4) === y && ok[i]), i => +ms[i].slice(5)) || 0;
+const idxs = (ms, ok, y, cut) => d3.range(ms.length).filter(i => +ms[i].slice(0, 4) === y && ok[i] && +ms[i].slice(5) <= cut);
+const total = (v, ix) => d3.sum(ix, i => v[i] || 0);
+
+Promise.all(["pintu", "paspor", "wisnus", "tpk", "wisman_tahunan", "asal", "world", "maksud", "pintu_negara", "gender", "multivar"].map(n => d3.json(`data/${n}.json`))).then(([pintu, paspor, wisnus, tpk, wmt, asal, world, maksud, pn, gender, mv]) => {
+
+  // ================= W1. Tren wisman 2015-2025 + sorotan COVID =================
+  (function () {
+    const box = d3.select("#w1"), msel = d3.select("#w1m"), kpi = d3.select("#w1kpi");
+    fill(msel, ["Bulanan", "Tahunan"], "Bulanan");
+    const t = wmt.months.map(m => new Date(m + "-01")), yrs = Object.keys(wmt.annual).map(Number), A = y => wmt.annual[y];
+    const trough = A(2020) < A(2021) ? 2020 : 2021;
+    const pc = (a, b) => (b - a) / a, jt = v => (v / 1e6).toFixed(2).replace(".", ",") + " juta", pf = d3.format("+.0%");
+    const C = { pra: "#7a8aa0", pandemi: "#D55E00", pulih: "#009E73" };
+    const phase = y => y < 2020 ? "pra" : y <= 2021 ? "pandemi" : "pulih";
+    const fmtM = idLoc.format("%b %Y");
+    let spot = null;                                                   // rentang waktu yang disorot narasi scroll
+    const ti0 = d3.least(d3.range(t.length).filter(i => t[i] >= new Date("2020-03-01") && t[i] <= new Date("2021-12-31") && wmt.v[i] != null), i => wmt.v[i]);
+    Object.assign(NUM, { a2019: jt(A(2019)), a2025: jt(A(2025)), trough: jt(A(trough)), troughYear: trough, dropPct: d3.format(".0%")(1 - A(trough) / A(2019)),
+      ratio: d3.format(".0%")(A(2025) / A(2019)), gapWord: A(2025) >= A(2019) ? "sudah melampaui level sebelum pandemi" : "masih di bawah level sebelum pandemi",
+      troughMonth: fmtM(t[ti0]), troughMonthVal: nf(wmt.v[ti0]) });
+    kpi.html(`<div class="kpi"><span>Sebelum pandemi (2019)</span><b>${jt(A(2019))}</b></div>
+      <div class="kpi down"><span>Titik terendah (${trough})</span><b>${jt(A(trough))}</b><span>${pf(pc(A(2019), A(trough)))} dibanding 2019</span></div>
+      <div class="kpi up"><span>Pemulihan (2025)</span><b>${jt(A(2025))}</b><span>${pf(pc(A(trough), A(2025)))} dari ${trough}; ${d3.format(".0%")(A(2025) / A(2019))} dari level 2019</span></div>`);
+    function draw() {
+      const mode = msel.property("value"), m = { t: 26, r: 20, b: 34, l: 64 }, h = 380;
+      const svg = box.html("").append("svg").attr("viewBox", [0, 0, W, h]);
+      const yTick = d => d3.format(".1~f")(d / 1e6).replace(".", ",") + " jt";
+      if (mode === "Bulanan") {
+        const x = d3.scaleTime(d3.extent(t), [m.l, W - m.r]), y = d3.scaleLinear([0, d3.max(wmt.v) * 1.1], [h - m.b, m.t]);
+        const band = (a, b, c, label) => {
+          const x0 = x(new Date(a)), x1 = x(new Date(b));
+          svg.append("rect").attr("x", x0).attr("y", m.t).attr("width", x1 - x0).attr("height", h - m.t - m.b).attr("fill", c).attr("opacity", .13);
+          svg.append("text").attr("x", (x0 + x1) / 2).attr("y", m.t + 14).attr("text-anchor", "middle").attr("font-size", 12).attr("font-weight", 600).style("fill", c === C.pandemi ? TXT.pandemi : TXT.pulih).text(label);
+        };
+        band("2020-03-01", "2021-12-31", C.pandemi, "Pandemi COVID-19"); band("2022-01-01", "2025-12-31", C.pulih, "Pemulihan");
+        svg.append("g").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(11));
+        svg.append("g").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(6).tickFormat(yTick))
+          .call(g => g.selectAll(".tick line").clone().attr("x2", W - m.l - m.r).attr("stroke-opacity", .12));
+        svg.append("path").attr("d", d3.line().defined(d => d != null).x((d, i) => x(t[i])).y(d => y(d))(wmt.v)).attr("fill", "none").attr("stroke", "#1d2430").attr("stroke-width", 2);
+        const ti = d3.least(d3.range(t.length).filter(i => t[i] >= new Date("2020-03-01") && t[i] <= new Date("2021-12-31") && wmt.v[i] != null), i => wmt.v[i]);
+        svg.append("circle").attr("cx", x(t[ti])).attr("cy", y(wmt.v[ti])).attr("r", 5).attr("fill", C.pandemi).attr("stroke", "#fff");
+        svg.append("text").attr("x", x(t[ti])).attr("y", y(wmt.v[ti]) - 24).attr("text-anchor", "middle").attr("font-size", 11).style("fill", TXT.pandemi).attr("font-weight", 600).attr("paint-order", "stroke").attr("stroke", "#fff").attr("stroke-width", 3).text(`Terendah: ${fmtM(t[ti])} (${nf(wmt.v[ti])})`);
+        const li = wmt.v.length - 1;
+        svg.append("circle").attr("cx", x(t[li])).attr("cy", y(wmt.v[li])).attr("r", 4.5).attr("fill", C.pulih).attr("stroke", "#fff");
+        svg.append("text").attr("x", x(t[li]) - 8).attr("y", y(wmt.v[li]) - 10).attr("text-anchor", "end").attr("font-size", 11).style("fill", TXT.pulih).attr("font-weight", 600).attr("paint-order", "stroke").attr("stroke", "#fff").attr("stroke-width", 3).text(`${fmtM(t[li])}: ${nf(wmt.v[li])}`);
+        if (spot) { const a = x(new Date(spot[0])), b = x(new Date(spot[1]));       // redupkan bagian di luar rentang sorotan
+          [[m.l, a], [b, W - m.r]].forEach(([p, q]) => { if (q > p) svg.append("rect").attr("x", p).attr("y", m.t).attr("width", q - p).attr("height", h - m.t - m.b).attr("fill", "#fff").attr("opacity", .75).attr("pointer-events", "none"); }); }
+        const dot = svg.append("g");
+        svg.append("rect").attr("width", W).attr("height", h).attr("fill", "none").attr("pointer-events", "all")
+          .on("mousemove", e => {
+            const i = d3.bisectCenter(t, x.invert(d3.pointer(e)[0])), yo = i >= 12 && wmt.v[i - 12] ? pf(pc(wmt.v[i - 12], wmt.v[i])) : "-";
+            dot.html("").append("circle").attr("cx", x(t[i])).attr("cy", y(wmt.v[i])).attr("r", 4).attr("fill", "#1d2430");
+            showTip(e, `<b>${fmtM(t[i])}</b><br>Kunjungan: ${nf(wmt.v[i])}<br>Dibanding bulan sama tahun lalu: ${yo}`);
+          }).on("mouseleave", () => { dot.html(""); hideTip(); });
+      } else {
+        const x = d3.scaleBand(yrs, [m.l, W - m.r]).padding(.25), y = d3.scaleLinear([0, d3.max(yrs, A) * 1.15], [h - m.b, m.t]);
+        svg.append("g").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x));
+        svg.append("g").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(6).tickFormat(yTick))
+          .call(g => g.selectAll(".tick line").clone().attr("x2", W - m.l - m.r).attr("stroke-opacity", .12));
+        svg.selectAll("rect.b").data(yrs).join("rect").attr("class", "b").attr("x", d => x(d)).attr("y", d => y(A(d))).attr("width", x.bandwidth())
+          .attr("height", d => h - m.b - y(A(d))).attr("fill", d => C[phase(d)])
+          .on("mousemove", (e, d) => showTip(e, `<b>${d}</b><br>Kunjungan: ${nf(A(d))}<br>Dibanding tahun sebelumnya: ${A(d - 1) ? pf(pc(A(d - 1), A(d))) : "-"}`)).on("mouseleave", hideTip);
+        svg.selectAll("text.v").data(yrs).join("text").attr("class", "v").attr("x", d => x(d) + x.bandwidth() / 2).attr("y", d => y(A(d)) - 18)
+          .attr("text-anchor", "middle").attr("font-size", 11).text(d => (A(d) / 1e6).toFixed(1).replace(".", ",") + " jt");
+        svg.selectAll("text.g").data(yrs.filter(d => A(d - 1))).join("text").attr("class", "g").attr("x", d => x(d) + x.bandwidth() / 2).attr("y", d => y(A(d)) - 5)
+          .attr("text-anchor", "middle").attr("font-size", 11).attr("font-weight", 700).style("fill", d => A(d) >= A(d - 1) ? TXT.pulih : TXT.pandemi).text(d => pf(pc(A(d - 1), A(d))));
+        [["pra", "Pra-pandemi"], ["pandemi", "Pandemi"], ["pulih", "Pemulihan"]].forEach(([k, l], i) => {
+          svg.append("rect").attr("x", m.l + 8 + i * 110).attr("y", 6).attr("width", 12).attr("height", 12).attr("fill", C[k]);
+          svg.append("text").attr("x", m.l + 25 + i * 110).attr("y", 16).attr("font-size", 12).text(l);
+        });
+      }
+    }
+    msel.on("change", draw);
+    STEP.w1 = (mode, a, b) => { msel.property("value", mode); spot = a ? [a, b] : null; draw(); };
+    draw();
+  })();
+
+  // ================= Sunburst pintu masuk wisman: total -> jenis pintu -> tiap pintu (filter kawasan + negara) =================
+  (function () {
+    const PERIODE = "periode sesuai berkas sumber";    // isi dengan periode tabelnya, mis. "Januari-Desember 2025"
+    const box = d3.select("#sb"), selR = d3.select("#sbr"), sel = d3.select("#sbn"), narr = d3.select("#sbnarr"), note = d3.select("#sbnote");
+    const NAMA = { Udara: "Pintu Udara", Laut: "Pintu Laut", Darat: "Pintu Darat" };
+    const WARNA = { Udara: "#0072B2", Laut: "#009E73", Darat: "#E69F00" };
+    const P = pn.pintu, ALL = P.map((_, i) => d3.sum(pn.negara, n => n.v[i])), ALLT = d3.sum(ALL);
+    const ALLJ = j => d3.sum(P, (p, i) => p.j === j ? ALL[i] : 0);
+    const pc = (v, t) => t > 0 ? d3.format(".1%")(v / t).replace(".", ",") : "0%";
+    const S = 560, R = S / 2, SEMUA_K = "Semua kawasan", SEMUA_N = "Semua negara";
+    fill(selR, [SEMUA_K, ...new Set(pn.negara.map(n => n.r))], SEMUA_K);
+    const isiNegara = () => {                      // daftar negara mengikuti kawasan terpilih
+      const k = selR.property("value");
+      fill(sel, [SEMUA_N, ...pn.negara.filter(n => k === SEMUA_K || n.r === k).map(n => n.n).sort(d3.ascending)], SEMUA_N);
+    };
+
+    function draw() {
+      const kw = selR.property("value"), nm = sel.property("value");
+      const pool = pn.negara.filter(n => kw === SEMUA_K || n.r === kw);
+      const wilayah = nm === SEMUA_N, semua = kw === SEMUA_K && wilayah;       // semua = tanpa filter apa pun
+      const cur = wilayah ? null : pn.negara.find(n => n.n === nm);
+      const vals = wilayah ? P.map((_, i) => d3.sum(pool, n => n.v[i])) : cur.v, total = d3.sum(vals);
+      const judul = semua ? "Total wisman" : wilayah ? `Wisman dari ${kw}` : `Wisman ${nm}`;
+      box.html(""); narr.html("");
+      note.text(`Periode data: ${PERIODE}. Kolom "Lainnya" pada tiap jenis pintu dihitung ulang dari total jenis pintu.`);
+      if (!total) { box.append("p").attr("class", "note").text(`Tidak ada data pintu masuk untuk ${wilayah ? kw : nm}.`); return; }
+      const kids = Object.keys(NAMA).map(j => ({
+        name: NAMA[j], j,
+        children: P.map((p, i) => ({ name: p.s, full: p.n, j: p.j, i, value: vals[i] })).filter(p => p.j === j && p.value > 0)
+      })).filter(g => g.children.length);
+      const root = d3.hierarchy({ name: "Total wisman", children: kids }).sum(d => d.value || 0).sort((a, b) => b.value - a.value);
+      d3.partition().size([2 * Math.PI, R])(root);
+      const arc = d3.arc().startAngle(d => d.x0).endAngle(d => d.x1).padAngle(.005).padRadius(R / 2)
+        .innerRadius(d => d.y0).outerRadius(d => d.y1 - 1);
+      const nodes = root.descendants().filter(d => d.depth > 0);
+      const color = d => {
+        if (d.depth === 1) return WARNA[d.data.j];
+        const sib = d.parent.children, i = sib.indexOf(d);
+        // lapisan terluar: nada tetap satu keluarga dengan induknya, tetapi terang-gelapnya diselang-seling
+        // (negatif = dicampur hitam, positif = dicampur putih) agar irisan bersebelahan mudah dibedakan
+        // tanpa mengandalkan perbedaan warna (aman untuk buta warna)
+        const POLA = [-0.22, 0.30, 0.02, 0.52, 0.16, 0.66, -0.08, 0.40];
+        const t = POLA[i % POLA.length];
+        return t < 0 ? d3.interpolateRgb(WARNA[d.data.j], "#000000")(-t) : d3.interpolateRgb(WARNA[d.data.j], "#ffffff")(t);
+      };
+      const tipOf = d => {
+        const leaf = d.depth === 2, j = d.data.j;
+        const pembanding = semua ? "" : `<br>Seluruh wisman: ${pc(leaf ? ALL[d.data.i] : ALLJ(j), ALLT)} dari total`;
+        return `<b>${leaf ? d.data.full : d.data.name}</b>${leaf ? `<br>${NAMA[j]}` : ""}<br>${nf(d.value)} kunjungan<br>` +
+          `${pc(d.value, total)} dari total${leaf ? `, ${pc(d.value, d.parent.value)} dari ${NAMA[j].toLowerCase()}` : ""}${pembanding}`;
+      };
+      const svg = box.append("svg").attr("viewBox", [-R, -R, S, S]).style("max-width", "600px").style("margin", "0 auto");
+      const paths = svg.append("g").selectAll("path").data(nodes).join("path").attr("d", arc).attr("fill", color).attr("stroke", "#fff")
+        .on("mousemove", (e, d) => { paths.attr("opacity", n => n === d ? 1 : .6); showTip(e, tipOf(d)); })
+        .on("mouseleave", () => { paths.attr("opacity", 1); hideTip(); });
+      const rot = d => {
+        const a = (d.x0 + d.x1) / 2 * 180 / Math.PI;
+        return `rotate(${a - 90}) translate(${(d.y0 + d.y1) / 2},0) rotate(${a < 180 ? 0 : 180})`;
+      };
+      svg.append("g").attr("pointer-events", "none").attr("text-anchor", "middle").selectAll("text")
+        .data(nodes.filter(d => (d.x1 - d.x0) > (d.depth === 1 ? .2 : .13)))
+        .join("text").attr("transform", rot).attr("dy", "0.35em").attr("font-size", 10.5)
+        .style("fill", d => d3.hsl(color(d)).l < .6 ? "#fff" : "#1d2430")
+        .text(d => { const t = d.data.name; return t.length > 17 ? t.slice(0, 16) + "…" : t; });
+      svg.append("text").attr("text-anchor", "middle").attr("dy", "-1.3em").attr("font-size", 12).style("fill", "#5b6575").text(judul);
+      svg.append("text").attr("text-anchor", "middle").attr("dy", "0.35em").attr("font-size", 22).attr("font-weight", 700).text(nf(total));
+      svg.append("text").attr("text-anchor", "middle").attr("dy", "2.1em").attr("font-size", 11).style("fill", "#5b6575").text("kunjungan");
+
+      // narasi dinamis yang menyambung ke peta "Dari mana wisman datang?"
+      const jt = Object.keys(NAMA).map(j => ({ j, v: d3.sum(P, (p, i) => p.j === j ? vals[i] : 0) })).sort((a, b) => b.v - a.v);
+      const top = P.map((p, i) => ({ p, v: vals[i] })).sort((a, b) => b.v - a.v)[0];
+      const lc = j => NAMA[j].toLowerCase();
+      const dom = `<b>${pc(jt[0].v, total)}</b> masuk lewat ${lc(jt[0].j)}, dengan pintu terbesar <b>${top.p.s}</b> (${pc(top.v, total)})`;
+      const banding = `Sebagai pembanding, ${lc(jt[0].j)} dipakai ${pc(ALLJ(jt[0].j), ALLT)} dari seluruh wisman.`;
+      if (semua) {
+        narr.html(`Secara keseluruhan, <b>${pc(jt[0].v, total)}</b> wisman masuk lewat ${lc(jt[0].j)}, ${pc(jt[1].v, total)} lewat ${lc(jt[1].j)}, dan ${pc(jt[2].v, total)} lewat ${lc(jt[2].j)}. Pintu tunggal terbesar adalah <b>${top.p.s}</b> (${pc(top.v, total)}). Pilih kawasan atau negara asal yang tampak menonjol pada peta di atas untuk melihat lewat mana mereka masuk.`);
+      } else if (wilayah) {
+        const tn = pool.map(n => ({ n: n.n, v: d3.sum(n.v) })).sort((a, b) => b.v - a.v)[0];
+        narr.html(`Wisman dari kawasan <b>${kw}</b> menyumbang ${pc(total, ALLT)} dari seluruh wisman; ${dom}. Negara penyumbang terbesar di kawasan ini adalah <b>${tn.n}</b> (${pc(tn.v, total)}). ${banding} Peta di atas menunjukkan dari mana mereka datang; diagram ini menunjukkan di pintu mana mereka tiba.`);
+      } else {
+        narr.html(`Wisman asal <b>${nm}</b> (${cur.r}) menyumbang ${pc(total, ALLT)} dari seluruh wisman; ${dom}. ${banding} Peta di atas menunjukkan dari mana mereka datang; diagram ini menunjukkan di pintu mana mereka tiba.`);
+      }
+    }
+    const sumJ = (n, j) => d3.sum(P, (p, i) => p.j === j ? n.v[i] : 0), best = f => d3.greatest(pn.negara, f), tot = n => d3.sum(n.v);
+    const iB = P.findIndex(p => /ngurah/i.test(p.s)), cSea = best(n => sumJ(n, "Laut")), cLand = best(n => sumJ(n, "Darat")), cBali = iB >= 0 ? best(n => n.v[iB]) : pn.negara[0];
+    const gate = (n, j) => P.map((p, i) => ({ p, v: n.v[i] })).filter(o => !j || o.p.j === j).sort((a, b) => b.v - a.v)[0];
+    const gts = ALL.map((v, i) => ({ s: P[i].s, v })).sort((a, b) => b.v - a.v), gS = gate(cSea, "Laut"), gL = gate(cLand, "Darat");
+    Object.assign(NUM, { airShare: pc(ALLJ("Udara"), ALLT), topGate: gts[0].s, topGateShare: pc(gts[0].v, ALLT), gate2: gts[1].s, gate2Share: pc(gts[1].v, ALLT),
+      seaName: cSea.n, seaShare: pc(sumJ(cSea, "Laut"), tot(cSea)), seaPort: gS.p.s, seaPortShare: pc(gS.v, tot(cSea)),
+      landName: cLand.n, landShare: pc(sumJ(cLand, "Darat"), tot(cLand)), landPost: gL.p.s,
+      baliName: cBali.n, baliGate: iB >= 0 ? P[iB].s : gate(cBali).p.s, baliShare: pc(iB >= 0 ? cBali.v[iB] : gate(cBali).v, tot(cBali)) });
+    const pickC = { all: null, laut: cSea, darat: cLand, bali: cBali };
+    STEP.sb = k => { const c = pickC[k]; selR.property("value", c ? c.r : SEMUA_K); isiNegara(); sel.property("value", c ? c.n : SEMUA_N); draw(); };
+    selR.on("change", () => { isiNegara(); draw(); }); sel.on("change", draw);
+    isiNegara(); draw();
+  })();
+
+  // ================= W2. Peta aliran: asal wisman -> Indonesia =================
+  (function () {
+    const box = d3.select("#w2"), ysel = d3.select("#w2y"), rsel = d3.select("#w2r"), nsel = d3.select("#w2n"), note = d3.select("#w2note");
+    fill(ysel, asal.years, asal.years[asal.years.length - 1]);
+    fill(rsel, ["Semua kawasan", ...new Set(asal.rows.map(r => r.r))], "Semua kawasan");
+    fill(nsel, [10, 15, 20, 30, 50], 20);
+    const Wm = 900, Hm = 470, dest = [118, -2.5];
+    const col = d3.scaleOrdinal().domain(["ASEAN", "Asia (di luar ASEAN)", "Timur Tengah", "Eropa", "Amerika", "Oseania", "Afrika"])
+      .range(["#009E73", "#E69F00", "#CC79A7", "#0072B2", "#D55E00", "#56B4E9", "#7a8aa0"]);
+    // proyeksi dasar (seluruh dunia) dan proyeksi "kamera" yang bergerak mengikuti narasi
+    const mk = () => d3.geoNaturalEarth1().rotate([-150, 0]);
+    const base = mk().fitExtent([[4, 4], [Wm - 4, Hm - 4]], { type: "Sphere" }), S0 = base.scale();
+    const proj = mk(), path = d3.geoPath(proj);
+    let view = { k: S0, c: base.invert([Wm / 2, Hm / 2]) }, timer = null;
+    const setView = v => {                                   // skala k, titik geografis c berada di tengah bingkai
+      proj.scale(v.k).translate([Wm / 2, Hm / 2]);
+      const q = proj(v.c); proj.translate([Wm - q[0], Hm - q[1]]);
+    };
+    const MAXZ = 9;                                          // batas zoom maksimum terhadap tampilan dunia
+    function targetView(data, reg) {
+      if (reg === "Semua kawasan" || !data.length) return { k: S0, c: base.invert([Wm / 2, Hm / 2]) };
+      const pts = { type: "MultiPoint", coordinates: [...data.map(d => d.c), dest] };
+      const f = mk().fitExtent([[80, 70], [Wm - 80, Hm - 70]], pts);
+      return { k: Math.min(f.scale(), S0 * MAXZ), c: f.invert([Wm / 2, Hm / 2]) };
+    }
+    function draw(instant) {
+      const yi = asal.years.indexOf(+ysel.property("value")), reg = rsel.property("value"), n = +nsel.property("value"), all = asal.total[yi];
+      const data = asal.rows.filter(r => reg === "Semua kawasan" || r.r === reg).map(r => ({ ...r, val: r.v[yi] })).filter(r => r.val > 0)
+        .sort((a, b) => b.val - a.val).slice(0, n);
+      const zoomed = reg !== "Semua kawasan";
+      const w = d3.scaleSqrt([0, d3.max(data, d => d.val) || 1], [1, zoomed ? 22 : 18]);
+      const svg = box.html("").append("svg").attr("viewBox", [0, 0, Wm, Hm]);
+      const defs = svg.append("defs");
+      col.domain().forEach((k, i) => defs.append("marker").attr("id", "arr" + i).attr("viewBox", "0 0 10 10").attr("refX", 8).attr("refY", 5)
+        .attr("markerUnits", "userSpaceOnUse").attr("markerWidth", 12).attr("markerHeight", 12).attr("orient", "auto")
+        .append("path").attr("d", "M0,0 L10,5 L0,10 Z").attr("fill", col(k)));
+      const sph = svg.append("path").attr("fill", "#f4f7fb").attr("stroke", "#c9d2de");
+      const land = svg.append("g").selectAll("path").data(world.features).join("path")
+        .attr("fill", d => d.properties.name === "Indonesia" ? "#cfe3f3" : "#e6eaf0").attr("stroke", "#fff").attr("stroke-width", .4);
+      const tipOf = d => `<b>${d.n}</b><br>${d.r}<br>Kunjungan ${asal.years[yi]}: ${nf(d.val)}<br>${d3.format(".1%")(d.val / all)} dari seluruh wisman`;
+      const lines = svg.append("g").attr("fill", "none").attr("stroke-linecap", "round").selectAll("path").data(data.slice().reverse()).join("path")
+        .attr("stroke", d => col(d.r)).attr("stroke-width", d => w(d.val))
+        .attr("stroke-opacity", .55).attr("marker-end", d => `url(#arr${col.domain().indexOf(d.r)})`)
+        .on("mousemove", (e, d) => showTip(e, tipOf(d))).on("mouseleave", hideTip);
+      const dots = svg.append("g").selectAll("circle").data(data).join("circle").attr("r", zoomed ? 5 : 4)
+        .attr("fill", d => col(d.r)).attr("stroke", "#fff").on("mousemove", (e, d) => showTip(e, tipOf(d))).on("mouseleave", hideTip);
+      const labs = svg.append("g").attr("pointer-events", "none").selectAll("text").data(data.slice(0, zoomed ? 12 : 8)).join("text")
+        .attr("font-size", zoomed ? 12 : 11).attr("font-weight", zoomed ? 600 : 400).attr("paint-order", "stroke").attr("stroke", "#fff").attr("stroke-width", 3).text(d => d.n);
+      const dc = svg.append("circle").attr("r", 6).attr("fill", "#1d2430").attr("stroke", "#fff");
+      const dt = svg.append("text").attr("font-size", 12).attr("font-weight", 700)
+        .attr("paint-order", "stroke").attr("stroke", "#fff").attr("stroke-width", 3).text("Indonesia");
+      col.domain().forEach((k, i) => {
+        svg.append("rect").attr("x", 10).attr("y", Hm - 18 - i * 17).attr("width", 12).attr("height", 12).attr("fill", col(k));
+        svg.append("text").attr("x", 28).attr("y", Hm - 8 - i * 17).attr("font-size", 11).text(k);
+      });
+      if (zoomed) svg.append("text").attr("x", 12).attr("y", 22).attr("font-size", 13).attr("font-weight", 700)
+        .attr("paint-order", "stroke").attr("stroke", "#fff").attr("stroke-width", 3).text(`Fokus: ${reg}`);
+      const paint = () => {                                   // hanya memperbarui posisi, dipanggil tiap frame animasi
+        sph.attr("d", path({ type: "Sphere" })); land.attr("d", path);
+        lines.attr("d", d => path({ type: "LineString", coordinates: [d.c, dest] }));
+        dots.attr("cx", d => proj(d.c)[0]).attr("cy", d => proj(d.c)[1]);
+        labs.attr("x", d => proj(d.c)[0] + 7).attr("y", d => proj(d.c)[1] - 7);
+        dc.attr("cx", proj(dest)[0]).attr("cy", proj(dest)[1]); dt.attr("x", proj(dest)[0] + 9).attr("y", proj(dest)[1] + 16);
+      };
+      const from = view, to = targetView(data, reg), dur = instant === true ? 0 : 1100;
+      if (timer) timer.stop();
+      const step = el => {
+        const e = d3.easeCubicInOut(dur ? Math.min(1, el / dur) : 1), ic = d3.interpolate(from.c, to.c);
+        view = { k: from.k * Math.pow(to.k / from.k, e), c: ic(e) };       // zoom geometrik terasa seragam
+        setView(view); paint(); if (e >= 1 && timer) timer.stop();
+      };
+      step(0); if (dur) timer = d3.timer(step);
+      const mapped = d3.sum(asal.rows, r => r.v[yi]);
+    }
+    const yL = asal.years.length - 1, allL = asal.total[yL], byR = {}, srt = [...asal.rows].sort((a, b) => b.v[yL] - a.v[yL]);
+    asal.rows.forEach(r => byR[r.r] = (byR[r.r] || 0) + r.v[yL]);
+    const sh = k => d3.format(".0%")((byR[k] || 0) / allL), tp = (k, n) => lj(srt.filter(r => r.r === k).slice(0, n).map(r => r.n));
+    Object.assign(NUM, { w2year: asal.years[yL], w2top: lj(srt.slice(0, 3).map(r => r.n)), w2top1: srt[0].n, w2top1sh: d3.format(".0%")(srt[0].v[yL] / allL),
+      aseanShare: sh("ASEAN"), aseanTop: tp("ASEAN", 2), asiaShare: sh("Asia (di luar ASEAN)"), asiaTop: tp("Asia (di luar ASEAN)", 3), eropaShare: sh("Eropa"), eropaTop: tp("Eropa", 3) });
+    STEP.w2 = (reg, n) => { ysel.property("value", asal.years[yL]); rsel.property("value", reg); nsel.property("value", n); draw(); };
+    ysel.on("change", () => draw()); rsel.on("change", () => draw()); nsel.on("change", () => draw()); draw(true);
+  })();
+
+  // ================= 2. Treemap hierarki: ukuran = kunjungan per paspor, warna = kawasan =================
+  (function () {
+    const ysel = d3.select("#v2y"), bc = d3.select("#v2bc"), box = d3.select("#v2"), leg = d3.select("#v2leg");
+    const years = yearsOf(paspor.months);
+    fill(ysel, years, years[years.length - 2]);
+    const warna = d3.scaleOrdinal().domain(["ASEAN", "Asia (di luar ASEAN)", "Timur Tengah", "Eropa", "Amerika", "Oseania", "Afrika"])
+      .range(["#009E73", "#E69F00", "#CC79A7", "#0072B2", "#D55E00", "#56B4E9", "#7a8aa0"]);
+    leg.html(warna.domain().map(k => `<span style="display:inline-flex;align-items:center;gap:5px;margin:0 12px 6px 0;font-size:.82rem"><i style="width:12px;height:12px;background:${warna(k)};display:inline-block;border-radius:2px"></i>${k}</span>`).join(""));
+    const prep = h => { h.sum(d => d.cur || 0); h.eachAfter(n => { n.prev = n.children ? d3.sum(n.children, c => c.prev) : n.data.prev; }); return h; };
+    const pc = (v, t) => d3.format(".1%")(v / t).replace(".", ",");
+    let root, focus, hl = null;
+    const goto = d => { focus = root.descendants().find(n => n.data === d.data); draw(); };
+
+    function build() {
+      const y = +ysel.property("value"), ms = paspor.months;
+      const ok = okOf(ms, paspor.rows, r => r.v), cut = cutOf(ms, ok, y);
+      const cur = idxs(ms, ok, y, cut), prv = idxs(ms, ok, y - 1, cut);
+      
+      // --- UBAHAN 1: Buat flat array tanpa d3.rollup berdasarkan region ---
+      const kids = paspor.rows.map(r => ({
+        name: r.path[1],
+        reg: r.path[0],
+        cur: total(r.v, cur),
+        prev: total(r.v, prv)
+      }));
+
+      root = prep(d3.hierarchy({ name: "Dunia", children: kids }));
+      focus = root; draw();
+    }
+
+    function draw() {
+      const w = box.node().clientWidth || W, h = Math.max(280, Math.min(520, innerHeight - 330)), f = focus.copy(); prep(f); f.sort((a, b) => b.value - a.value);
+      
+      // --- UBAHAN 2: Layout Treemap flat ---
+      d3.treemap().size([w, h]).paddingInner(1).round(true)(f);
+      const nodes = f.descendants().filter(d => d.depth > 0);
+      const ink = c => d3.hsl(c).l < .55 ? "#fff" : "#111";
+      const gr = n => n.prev > 0 ? d3.format("+.1%")((n.value - n.prev) / n.prev).replace(".", ",") : "tidak ada pembanding";
+      
+      box.style("height", h + "px").html("");
+      box.selectAll("div").data(nodes).join("div").attr("class", "tile")
+        .style("left", d => d.x0 + "px").style("top", d => d.y0 + "px")
+        .style("width", d => d.x1 - d.x0 + "px").style("height", d => d.y1 - d.y0 + "px")
+        .style("background", d => warna(d.data.reg)).style("opacity", d => !hl || d.data.reg === hl ? 1 : .15)
+        .style("color", d => ink(warna(d.data.reg))).style("text-shadow", "none")
+        .style("cursor", d => d.children ? "pointer" : "default")
+        .html(d => (d.x1 - d.x0 > 50 && d.y1 - d.y0 > 25 ? `<b>${d.data.name}</b><br>${nf(d.value)}` : ""))
+        .on("mousemove", (e, d) => showTip(e, 
+          `<b>${d.data.name}</b><br>Kawasan: ${d.data.reg}<br>Kunjungan: ${nf(d.value)}<br>${pc(d.value, root.value)} dari seluruh wisman<br>Dibanding periode sama tahun lalu: ${gr(d)}`
+        ))
+        .on("mouseleave", hideTip)
+        .on("click", (e, d) => { if (d.children) { hideTip(); goto(d); } });
+        
+      bc.html("").selectAll("span").data(focus.ancestors().reverse()).join("span").text(d => d.data.name).on("click", (e, d) => goto(d));
+    }
+    (() => {
+      const y = years[years.length - 2], ms = paspor.months, ok = okOf(ms, paspor.rows, r => r.v), cur = idxs(ms, ok, y, cutOf(ms, ok, y)), by = {};
+      const rows = paspor.rows.map(r => ({ reg: r.path[0], n: r.path[1], v: total(r.v, cur) })).sort((a, b) => b.v - a.v), T = d3.sum(rows, r => r.v);
+      rows.forEach(r => by[r.reg] = (by[r.reg] || 0) + r.v);
+      const sh = k => d3.format(".0%")((by[k] || 0) / T), tp = (k, n) => lj(rows.filter(r => r.reg === k).slice(0, n).map(r => r.n));
+      Object.assign(NUM, { v2Year: y, tmTop1: rows[0].n, tmTop1Sh: d3.format(".0%")(rows[0].v / T), tmAsean: sh("ASEAN"), tmAseanTop: tp("ASEAN", 3),
+        tmAsia: sh("Asia (di luar ASEAN)"), tmAsiaTop: tp("Asia (di luar ASEAN)", 3), tmEropa: sh("Eropa"), tmEropaTop: tp("Eropa", 3) });
+    })();
+    STEP.v2 = reg => { hl = reg || null; const d = years[years.length - 2]; if (+ysel.property("value") !== d) { ysel.property("value", d); build(); } else { focus = root; draw(); } };
+    ysel.on("change", build); window.addEventListener("resize", draw); build();
+  })();
+
+  // ================= 3. Wisnus: tujuan vs asal =================
+  const okW = okOf(wisnus.months, wisnus.rows, r => r.asal);
+  (function () {
+    const box = d3.select("#v3"), ysel = d3.select("#v3y"), msel = d3.select("#v3m"), ssel = d3.select("#v3s"), snote = d3.select("#v3n"), K = 5;
+    const years = yearsOf(wisnus.months); fill(ysel, years, years[years.length - 2]);
+    function draw() {
+      const y = +ysel.property("value"), mk = msel.property("value");
+      const ix = idxs(wisnus.months, okW, y, cutOf(wisnus.months, okW, y));
+      const data = wisnus.rows.map(r => { const a = total(r.asal, ix), t = total(r.tujuan, ix);
+        return { p: r.p, a, t, val: mk === "net" ? t - a : mk === "t" ? t : a }; }).sort((a, b) => b.val - a.val);
+      const compact = ssel.property("value") === "top" && data.length > 2 * K;
+      const GAP = "__gap";
+      const hidden = compact ? data.length - 2 * K : 0;
+      if (compact) data.splice(K, hidden, { p: GAP, gap: true, val: 0 });      // sisakan 5 teratas, penanda jeda, 5 terbawah
+      snote.text(compact ? `Menampilkan ${K} provinsi dengan nilai tertinggi dan ${K} terendah; ${hidden} provinsi di antaranya disembunyikan. Pilih "Semua provinsi" pada menu Tampilan untuk melihat seluruhnya.` : `Menampilkan seluruh ${data.length} provinsi.`);
+      const real = data.filter(d => !d.gap), fmtV = d => mk === "net" ? d3.format("+,")(Math.round(d.val)).replace(/,/g, ".") : nf(d.val);
+      const row = compact ? 26 : 18, m = { t: 8, r: 24, b: 26, l: 170 }, h = m.t + m.b + row * data.length;
+      const x = d3.scaleLinear(d3.extent([0, ...real.map(d => d.val)]), [m.l, W - (compact ? 70 : m.r)]).nice();
+      const yb = d3.scaleBand(data.map(d => d.p), [m.t, h - m.b]).padding(.18);
+      const svg = box.html("").append("svg").attr("viewBox", [0, 0, W, h]);
+      svg.append("g").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(6).tickFormat(d3.format(".2s")));
+      svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", m.t).attr("y2", h - m.b).attr("stroke", "#888");
+      svg.selectAll("rect").data(real).join("rect").attr("data-p", d => d.p).classed("sel", d => d.p === state.sel)
+        .attr("x", d => x(Math.min(0, d.val))).attr("y", d => yb(d.p)).attr("width", d => Math.abs(x(d.val) - x(0))).attr("height", yb.bandwidth())
+        .attr("fill", d => mk === "net" ? (d.val >= 0 ? "#0072B2" : "#D55E00") : "#0072B2").style("cursor", "pointer")
+        .on("click", (e, d) => pick(d.p))
+        .on("mousemove", (e, d) => showTip(e, `<b>${d.p}</b><br>Tujuan: ${nf(d.t)}<br>Asal: ${nf(d.a)}<br>Selisih: ${d3.format("+,")(Math.round(d.t - d.a)).replace(/,/g, ".")}`))
+        .on("mouseleave", hideTip);
+      svg.selectAll("text.lab").data(data).join("text").attr("class", "lab").attr("x", m.l - 6).attr("y", d => yb(d.p) + yb.bandwidth() / 2)
+        .attr("dy", "0.35em").attr("text-anchor", "end").attr("font-size", 11).attr("font-style", d => d.gap ? "italic" : null)
+        .style("fill", d => d.gap ? "#888" : null).text(d => d.gap ? `⋯ ${hidden} provinsi lainnya` : d.p);
+      if (compact) {
+        svg.append("line").attr("x1", m.l).attr("x2", W - 70).attr("y1", yb(GAP) + yb.bandwidth() / 2).attr("y2", yb(GAP) + yb.bandwidth() / 2)
+          .attr("stroke", "#bbb").attr("stroke-dasharray", "3 4");
+        svg.selectAll("text.val").data(real).join("text").attr("class", "val").attr("y", d => yb(d.p) + yb.bandwidth() / 2).attr("dy", "0.35em").attr("font-size", 11)
+          .attr("x", d => d.val >= 0 ? x(d.val) + 5 : x(d.val) - 5).attr("text-anchor", d => d.val >= 0 ? "start" : "end").text(fmtV);
+      }
+    }
+    (() => {
+      const y = years[years.length - 2], ix = idxs(wisnus.months, okW, y, cutOf(wisnus.months, okW, y));
+      const d = wisnus.rows.map(r => { const a = total(r.asal, ix), t = total(r.tujuan, ix); return { p: tc(r.p), a, t, net: t - a }; });
+      const by = k => [...d].sort((a, b) => b[k] - a[k]), nt = by("net"), nb = nt.slice().reverse();
+      Object.assign(NUM, { v3Year: y, v3N: d.length, netTop3: lj(nt.slice(0, 3).map(o => o.p)), netTop1: nt[0].p, netTopV: jt1(nt[0].net), netBot3: lj(nb.slice(0, 3).map(o => o.p)), netBot1: nb[0].p, netBotV: jt1(Math.abs(nb[0].net)),
+        tujTop3: lj(by("t").slice(0, 3).map(o => o.p)), asalTop3: lj(by("a").slice(0, 3).map(o => o.p)) });
+    })();
+    STEP.v3 = (mk, sv) => { ysel.property("value", years[years.length - 2]); msel.property("value", mk); ssel.property("value", sv); draw(); };
+    ysel.on("change", draw); msel.on("change", draw); ssel.on("change", draw); draw();
+  })();
+
+    // ================= Sankey: provinsi asal -> maksud perjalanan -> jenis kelamin (2025) =================
+  (function () {
+    const BISNIS = new Set(["Profesi/Bisnis", "Pertemuan/Kongres/Seminar", "Pelatihan"]);   // samakan dengan GRUP di sunburst
+    const cMaksud = k => k === "Lainnya" ? "#7a8aa0" : BISNIS.has(k) ? "#E69F00" : "#009E73";
+    const cGender = { "Laki-laki": "#0072B2", "Perempuan": "#CC79A7" };
+    const SEMUA = "Semua provinsi", TOP = 10;                                       // TOP = jumlah provinsi yang ditampilkan sendiri
+    const box = d3.select("#sk"), msel = d3.select("#skm"), psel = d3.select("#skp"), note = d3.select("#sknote");
+    const key = s => String(s).toLowerCase().replace(/[^a-z]/g, "");                // abaikan huruf besar, titik, spasi
+    const ix = Object.fromEntries(maksud.kategori.map((k, i) => [k, i]));
+    const gx = Object.fromEntries(gender.rows.map(r => [key(r.p), r]));             // gender per provinsi
+    const ix25 = idxs(wisnus.months, okW, 2025, cutOf(wisnus.months, okW, 2025));
+    const trips = Object.fromEntries(wisnus.rows.map(r => [key(r.p), total(r.asal, ix25)]));
+    const provs = maksud.rows.filter(r => r.p !== "Indonesia");
+    const tanpaBobot = provs.filter(r => !(trips[key(r.p)] > 0)).map(r => r.p);
+    fill(psel, [SEMUA, ...provs.map(r => r.p).sort(d3.ascending)], SEMUA);          // filter provinsi
+    if (tanpaBobot.length === provs.length) {                                       // tidak ada provinsi yang cocok -> mode persentase saja
+      msel.property("value", "pct");
+      msel.select('option[value="trips"]').attr("disabled", true);
+    }
+
+    function draw() {
+      const byTrips = msel.property("value") === "trips", pilih = psel.property("value");
+      const daftar = pilih === SEMUA ? provs : provs.filter(r => r.p === pilih);
+      const one = daftar.length === 1;
+      const nodes = [], links = [], seen = new Set(), lm = new Map();
+      const node = (id, name, kind, color, lain) => { if (!seen.has(id)) { seen.add(id); nodes.push({ id, name, kind, color, lain }); } };
+      const addLink = (s, t, v, c) => {                                             // alur yang sama dijumlahkan (dipakai untuk "lainnya")
+        const k = s + "|" + t, o = lm.get(k);
+        if (o) o.value += v; else { const l = { source: s, target: t, value: v, color: c }; lm.set(k, l); links.push(l); }
+      };
+      const mg = {}, kosong = [], sah = [];                                         // mg[maksud][gender] = nilai alur
+
+      daftar.forEach(r => {
+        const gp = gx[key(r.p)], w = byTrips ? trips[key(r.p)] : 100;
+        if (!(w > 0) || !gp || !maksud.kategori.some(k => r.v[ix[k]] > 0)) kosong.push(r.p); else sah.push({ r, gp, w });
+      });
+      // 15 provinsi teratas menurut jumlah perjalanan asal 2025; sisanya digabung menjadi satu node
+      const urut = [...sah].sort((a, b) => (trips[key(b.r.p)] || 0) - (trips[key(a.r.p)] || 0));
+      const top = new Set(urut.slice(0, TOP).map(d => d.r.p));
+      const banyakLain = sah.length > TOP ? sah.length - TOP : 0, LAIN = `Provinsi lainnya (${banyakLain})`;
+      const anggota = [];
+
+      sah.forEach(({ r, gp, w }) => {
+        const lain = banyakLain > 0 && !top.has(r.p), pid = "p:" + (lain ? LAIN : r.p);
+        if (lain) anggota.push(r.p);
+        maksud.kategori.forEach(k => {
+          const v = r.v[ix[k]]; if (!(v > 0)) return;                               // NA / '-' dilewati
+          const val = w * v / 100;
+          node(pid, lain ? LAIN : r.p, "p", lain ? "#6b7686" : "#9aa5b5", lain); node("m:" + k, k, "m", cMaksud(k));
+          addLink(pid, "m:" + k, val, cMaksud(k));
+          // asumsi: rasio L/P provinsi ini sama untuk semua maksud perjalanan
+          mg[k] = mg[k] || { "Laki-laki": 0, "Perempuan": 0 };
+          mg[k]["Laki-laki"] += val * gp.L / 100; mg[k]["Perempuan"] += val * gp.P / 100;
+        });
+      });
+      const nl = nodes.find(n => n.lain); if (nl) nl.members = anggota.sort(d3.ascending);   // daftar provinsi untuk tooltip
+      Object.entries(mg).forEach(([k, gg]) => Object.entries(gg).forEach(([n, val]) => {
+        node("g:" + n, n, "g", cGender[n]); addLink("m:" + k, "g:" + n, val, cGender[n]);
+      }));
+
+      if (!links.length) {                                                          // cegah error d3-sankey saat data kosong
+        box.html("");
+        note.text(pilih !== SEMUA
+          ? `Tidak ada data untuk ${pilih} pada ukuran ini (maksud perjalanan tercatat NA di tabel sumber, atau jumlah perjalanan tidak tersedia pada mode "Perkiraan jumlah perjalanan").`
+          : `Sankey tidak dapat digambar: tidak ada provinsi yang namanya cocok antara data maksud (${provs.length}), ` +
+            `gender (${gender.rows.length}) dan wisnus (${wisnus.rows.length}); bulan 2025 di wisnus: ${ix25.length}.`);
+        return;
+      }
+      const grand = d3.sum(links.filter(l => l.source.startsWith("p:")), l => l.value);
+
+      const h = one ? 460 : 640, m = { t: 10, r: 100, b: 10, l: 170 };
+      const g = d3.sankey().nodeId(d => d.id).nodeWidth(12).nodePadding(one ? 12 : 8)
+        // kolom provinsi: terbesar di atas, "lainnya" selalu paling bawah; kolom lain tidak diurutkan ulang
+        .nodeSort((a, b) => a.kind === "p" && b.kind === "p" ? (a.lain ? 1 : 0) - (b.lain ? 1 : 0) || b.value - a.value : 0)
+        .extent([[m.l, m.t], [W - m.r, h - m.b]])({ nodes, links });
+      const svg = box.html("").append("svg").attr("viewBox", [0, 0, W, h]);
+      const share = v => d3.format(".1%")(v / grand).replace(".", ",");
+
+      const lk = svg.append("g").attr("fill", "none").selectAll("path").data(g.links).join("path")
+        .attr("d", d3.sankeyLinkHorizontal()).attr("stroke", d => d.color)
+        .attr("stroke-width", d => Math.max(1, d.width)).attr("stroke-opacity", .35)
+        .on("mousemove", (e, d) => showTip(e, `<b>${d.source.name} → ${d.target.name}</b><br>${share(d.value)} dari seluruh alur` +
+          (byTrips ? `<br>±${nf(d.value)} perjalanan` : "")))
+        .on("mouseleave", hideTip);
+
+      svg.append("g").selectAll("rect").data(g.nodes).join("rect")
+        .attr("x", d => d.x0).attr("y", d => d.y0).attr("width", d => d.x1 - d.x0).attr("height", d => Math.max(1, d.y1 - d.y0))
+        .attr("fill", d => d.color)
+        .on("mousemove", (e, d) => {
+          lk.attr("stroke-opacity", l => (l.source === d || l.target === d) ? .65 : .08);
+          showTip(e, `<b>${d.name}</b><br>${share(d.value)} dari seluruh alur` + (byTrips ? `<br>±${nf(d.value)} perjalanan` : "") +
+            (d.members ? `<br>Terdiri dari: ${d.members.join(", ")}` : ""));
+        })
+        .on("mouseleave", () => { lk.attr("stroke-opacity", .35); hideTip(); });
+
+      svg.append("g").attr("font-size", 11).attr("pointer-events", "none").selectAll("text")
+        .data(g.nodes.filter(d => one || d.kind !== "p" || d.y1 - d.y0 >= 8)).join("text")
+        .attr("x", d => d.kind === "p" ? d.x0 - 6 : d.x1 + 6).attr("y", d => (d.y0 + d.y1) / 2).attr("dy", "0.35em")
+        .attr("text-anchor", d => d.kind === "p" ? "end" : "start").text(d => d.name)
+        .attr("stroke", "#fff").attr("stroke-width", 3).attr("paint-order", "stroke");
+
+      const bag = [""];
+      if (banyakLain) bag.push(`Ditampilkan ${TOP} provinsi dengan perjalanan asal terbanyak; ${banyakLain} provinsi lain digabung (arahkan kursor ke node "Provinsi lainnya" untuk daftarnya).` +
+        (byTrips ? "" : " Pada mode persentase, node gabungan lebih tebal karena menjumlahkan beberapa provinsi."));
+      if (kosong.length && !one) bag.push(``);
+      if (tanpaBobot.length === provs.length) bag.push("Mode jumlah perjalanan dinonaktifkan karena nama provinsi di data wisnus tidak cocok dengan data maksud.");
+      bag.push('');
+      note.text(bag.join(" "));
+    }
+    const sender = [...provs].sort((a, b) => (trips[key(b.p)] || 0) - (trips[key(a.p)] || 0))[0];
+    Object.assign(NUM, { skTop: tc(sender.p), skTopTrips: jt1(trips[key(sender.p)] || 0) });
+    STEP.sk = (mode, who) => { const noTrips = msel.select('option[value="trips"]').property("disabled"); msel.property("value", noTrips ? "pct" : mode); psel.property("value", who === "top" ? sender.p : SEMUA); draw(); };
+    msel.on("change", draw); psel.on("change", draw); draw();
+  })();
+
+  // ================= 7-9. Multivariat provinsi: PCA biplot + parallel coordinates (brushing & linking) =================
+  // Data: data/multivar.json (dibuat preprocess_multivar.py). Seleksi bersama = himpunan `active` (nama provinsi seperti di wisnus).
+  (function () {
+    const V = mv.vars, P = mv.prov, nV = V.length, KC = mv.km.k, R = mv.pca.ratio, L = mv.pca.load;
+    const PAL = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00", "#56B4E9"];       // palet buta-warna, sama dengan grafik lain
+    const col = d => PAL[d.cl % PAL.length], kl = c => "Klaster " + String.fromCharCode(65 + c);
+    const idn = (v, dec) => d3.format(",." + dec + "f")(v).replace(/[,.]/g, c => c === "," ? "." : ",");   // format Indonesia: 1.234,5
+    const fv = (j, v) => idn(v, V[j].dec) + (V[j].u ? " " + V[j].u : "");
+    const pct = v => idn(v * 100, 1) + "%", sgn = z => (z >= 0 ? "+" : "−") + idn(Math.abs(z), 1);
+    const inv = (j, t) => V[j].tf === "log" ? Math.pow(10, t) : t;
+    const em = j => `<i>${V[j].l}</i>`;
+    const active = new Set(); let hover = null;
+    const rad = d3.scaleSqrt(d3.extent(P, d => d.pop), [4, 13]);
+    const biBox = d3.select("#mvbi"), pcBox = d3.select("#mvpc"), leg = d3.select("#mvleg"), selNote = d3.select("#mvsel");
+    const xs = d3.select("#mvx"), ys = d3.select("#mvy"), arrCk = d3.select("#mvar"), ordSel = d3.select("#mvo");
+    fill(xs, ["PC1", "PC2", "PC3"], "PC1"); fill(ys, ["PC1", "PC2", "PC3"], "PC2");
+    let biPts, biLab, biX, biY, biCx, biCy, pcLines, pcImp, clearBi = () => {}, clearPc = () => {};
+
+    // ---------- seleksi bersama
+    function setActive(set, from) {
+      active.clear(); set.forEach(p => active.add(p));
+      if (from !== "bi") clearBi();
+      if (from !== "pc") clearPc();
+      refresh();
+    }
+    const driversText = c => {
+      const z = mv.km.centers[c], idx = d3.range(nV);
+      const hi = idx.filter(j => z[j] >= .5).sort((a, b) => z[b] - z[a]).slice(0, 3), lo = idx.filter(j => z[j] <= -.5).sort((a, b) => z[a] - z[b]).slice(0, 3);
+      return { hi, lo };
+    };
+    const chipDefs = [...d3.range(KC).map(c => {
+      const { hi, lo } = driversText(c);
+      return { c, txt: `${kl(c)} · ${mv.km.size[c]}`, color: PAL[c % PAL.length], set: P.filter(d => d.cl === c).map(d => d.p),
+               tip: `Tinggi: ${hi.map(j => V[j].l).join(", ") || "-"}. Rendah: ${lo.map(j => V[j].l).join(", ") || "-"}.` };
+    }), { txt: `Pencilan · ${P.filter(d => d.out).length}`, color: "#1d2430", set: P.filter(d => d.out).map(d => d.p), tip: "Provinsi dengan profil paling jauh dari rata-rata (pagar Tukey pada jarak z)." }];
+    const chips = leg.selectAll("button.chip").data(chipDefs).join("button").attr("class", "chip").attr("type", "button").attr("title", d => d.tip)
+      .html(d => `<i style="background:${d.color}"></i>${d.txt}`).on("click", (e, d) => setActive(new Set(d.set), "chip"));
+    leg.append("button").attr("class", "chip").attr("type", "button").text("Hapus seleksi").on("click", () => setActive(new Set(), "reset"));
+
+    // ---------- PCA biplot
+    function drawBi() {
+      const cx = +xs.property("value").slice(2) - 1, cy = +ys.property("value").slice(2) - 1;
+      const m = { t: 14, r: 16, b: 44, l: 54 }, h = 520, pw = W - m.l - m.r, ph = h - m.t - m.b;
+      const ex = d3.max(P, d => Math.abs(d.pc[cx])) * 1.12, ey = d3.max(P, d => Math.abs(d.pc[cy])) * 1.12;
+      const u = Math.min(pw / (2 * ex), ph / (2 * ey)), hx = pw / (2 * u), hy = ph / (2 * u);          // skala sama di kedua sumbu (jarak tidak terdistorsi)
+      const x = d3.scaleLinear([-hx, hx], [m.l, W - m.r]), y = d3.scaleLinear([-hy, hy], [h - m.b, m.t]);
+      biX = x; biY = y; biCx = cx; biCy = cy;
+      const svg = biBox.html("").append("svg").attr("viewBox", [0, 0, W, h]);
+      svg.append("defs").append("marker").attr("id", "mvarr").attr("viewBox", "0 0 10 10").attr("refX", 9).attr("refY", 5).attr("markerWidth", 6).attr("markerHeight", 6)
+        .attr("orient", "auto-start-reverse").append("path").attr("d", "M0,0L10,5L0,10z").attr("fill", "#5b6575");
+      svg.append("g").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(9));
+      svg.append("g").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(7));
+      svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", m.t).attr("y2", h - m.b).attr("stroke", "#bbb").attr("stroke-dasharray", "4 4");
+      svg.append("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0)).attr("stroke", "#bbb").attr("stroke-dasharray", "4 4");
+      svg.append("text").attr("x", (m.l + W - m.r) / 2).attr("y", h - 8).attr("text-anchor", "middle").attr("font-size", 12).text(`PC${cx + 1} (${pct(R[cx])} dari ragam)`);
+      svg.append("text").attr("transform", `translate(14,${(m.t + h - m.b) / 2}) rotate(-90)`).attr("text-anchor", "middle").attr("font-size", 12).text(`PC${cy + 1} (${pct(R[cy])} dari ragam)`);
+      const brush = d3.brush().extent([[m.l, m.t], [W - m.r, h - m.b]]).on("start brush end", e => {
+        if (!e.sourceEvent) return;                                                                       // abaikan pemanggilan program (brush.move)
+        if (!e.selection) return setActive(new Set(), "bi");
+        const [[x0, y0], [x1, y1]] = e.selection;
+        setActive(new Set(P.filter(d => { const a = x(d.pc[cx]), b = y(d.pc[cy]); return a >= x0 && a <= x1 && b >= y0 && b <= y1; }).map(d => d.p)), "bi");
+      });
+      const bg = svg.append("g").attr("class", "brush").call(brush);
+      clearBi = () => bg.call(brush.move, null);
+      // panah variabel = korelasi variabel dengan PC, diskalakan agar muat
+      const sc = .9 * Math.min(hx / d3.max(L, l => Math.abs(l[cx])), hy / d3.max(L, l => Math.abs(l[cy])));
+      const arr = svg.append("g").attr("pointer-events", "none").style("display", arrCk.property("checked") ? null : "none");
+      const items = V.map((v, j) => {                                                                  // label panah: hindari terpotong & tumpang tindih
+        const ax = x(sc * L[j][cx]), ay = y(sc * L[j][cy]), dx = ax - x(0), dy = ay - y(0), len = Math.hypot(dx, dy) || 1, txt = v.s.replace(/\|/g, " ");
+        const o = { ax, ay, txt, anc: dx >= 0 ? "start" : "end", x: ax + dx / len * 7, y: ay + dy / len * 7 }, wd = txt.length * 6.4;
+        if (o.anc === "start" && o.x + wd > W - 6) { o.anc = "end"; o.x = ax + 4; o.y = ay - 9; }
+        else if (o.anc === "end" && o.x - wd < 6) { o.anc = "start"; o.x = ax - 4; o.y = ay - 9; }
+        return o;
+      });
+      ["start", "end"].forEach(a => { const g = items.filter(o => o.anc === a).sort((p, q) => p.y - q.y); g.forEach((o, i) => { if (i && o.y - g[i - 1].y < 13) o.y = g[i - 1].y + 13; }); });
+      items.forEach(o => {
+        arr.append("line").attr("x1", x(0)).attr("y1", y(0)).attr("x2", o.ax).attr("y2", o.ay).attr("stroke", "#5b6575").attr("stroke-width", 1.3).attr("marker-end", "url(#mvarr)");
+        arr.append("text").attr("x", o.x).attr("y", Math.max(m.t + 6, Math.min(h - m.b - 6, o.y))).attr("dy", "0.35em").attr("text-anchor", o.anc)
+          .attr("font-size", 11).attr("font-weight", 600).style("fill", "#5b6575").style("paint-order", "stroke").style("stroke", "#fff").style("stroke-width", "3px").text(o.txt);
+      });
+      biBox.node().arrows = arr;
+      biPts = svg.append("g").selectAll("circle").data([...P].sort((a, b) => b.pop - a.pop)).join("circle")
+        .attr("data-p", d => d.p).classed("sel", d => d.p === state.sel).attr("cx", d => x(d.pc[cx])).attr("cy", d => y(d.pc[cy])).attr("r", d => rad(d.pop))
+        .attr("fill", col).style("cursor", "pointer")
+        .on("mouseenter", (e, d) => { hover = d.p; refresh(); })
+        .on("mousemove", (e, d) => showTip(e, `<b>${d.n}</b> · ${kl(d.cl)}${d.out ? " · pencilan" : ""}<br>PC${cx + 1}: ${idn(d.pc[cx], 2)}; PC${cy + 1}: ${idn(d.pc[cy], 2)}<br>Penduduk: ${nf(d.pop)}<br>Paling menonjol: ${V[d.top[0]].l} (z ${sgn(d.top[1])})`))
+        .on("mouseleave", () => { hover = null; refresh(); hideTip(); })
+        .on("click", (e, d) => { pick(d.p); refresh(); });
+      biLab = svg.append("g").attr("pointer-events", "none");
+    }
+
+    // ---------- parallel coordinates
+    function drawPc() {
+      const order = ordSel.property("value") === "pc1" ? d3.range(nV).sort((a, b) => L[b][0] - L[a][0]) : d3.range(nV);
+      const m = { t: 80, r: 24, b: 38, l: 24 }, h = 460;
+      const px = d3.scalePoint(order, [m.l + 36, W - m.r - 36]);
+      const py = V.map((_, j) => d3.scaleLinear(d3.extent(P, d => d.x[j]), [h - m.b, m.t]));
+      const svg = pcBox.html("").append("svg").attr("viewBox", [0, 0, W, h]);
+      const ranges = new Array(nV).fill(null), brushes = {}, gs = {};
+      const line = d => d3.line()(order.map(j => [px(j), py[j](d.x[j])]));
+      order.forEach(j => {
+        const g = svg.append("g").attr("transform", `translate(${px(j)},0)`);
+        g.append("line").attr("y1", m.t).attr("y2", h - m.b).attr("stroke", "#9aa3b2");
+        const lines = V[j].s.split("|");
+        const t = g.append("text").attr("text-anchor", "middle").attr("font-size", 11).attr("font-weight", 600);
+        lines.forEach((s, i) => t.append("tspan").attr("x", 0).attr("y", 14 + i * 13).text(s));
+        const [t0, t1] = py[j].domain(), ticks = [t0, (t0 + t1) / 2, t1];
+        g.selectAll("text.tk").data(ticks).join("text").attr("class", "tk").attr("x", -6).attr("y", d => py[j](d)).attr("dy", "0.35em").attr("text-anchor", "end")
+          .attr("font-size", 10).style("fill", "#5b6575").style("paint-order", "stroke").style("stroke", "#fff").style("stroke-width", "3px").text(d => idn(inv(j, d), V[j].dec));
+        if (V[j].u) g.append("text").attr("y", h - m.b + 20).attr("text-anchor", "middle").attr("font-size", 10).style("fill", "#5b6575").text(V[j].u);
+        const b = d3.brushY().extent([[-11, m.t - 4], [11, h - m.b + 4]]).on("start brush end", e => {
+          if (!e.sourceEvent) return;
+          ranges[j] = e.selection;
+          const act = order.filter(k => ranges[k]);
+          if (!act.length) return setActive(new Set(), "pc");
+          setActive(new Set(P.filter(d => act.every(k => { const yy = py[k](d.x[k]); return yy >= ranges[k][0] && yy <= ranges[k][1]; })).map(d => d.p)), "pc");
+        });
+        brushes[j] = b; gs[j] = g.append("g").attr("class", "brush").call(b);
+      });
+      clearPc = () => { ranges.fill(null); order.forEach(j => gs[j].call(brushes[j].move, null)); };
+      pcLines = svg.append("g").selectAll("path").data(P).join("path").attr("data-p", d => d.p).classed("sel", d => d.p === state.sel)
+        .attr("d", line).attr("fill", "none").attr("stroke", col).attr("stroke-linejoin", "round").style("cursor", "pointer")
+        .on("mouseenter", (e, d) => { hover = d.p; refresh(); d3.select(e.currentTarget).raise(); pcImp.raise(); })
+        .on("mousemove", (e, d) => {
+          const mx = d3.pointer(e, svg.node())[0], j = d3.least(order, k => Math.abs(px(k) - mx));
+          showTip(e, `<b>${d.n}</b> · ${kl(d.cl)}${d.out ? " · pencilan" : ""}<br>${V[j].l}: ${fv(j, d.raw[j])}${d.imp.includes(j) ? " *" : ""}`);
+        })
+        .on("mouseleave", () => { hover = null; refresh(); hideTip(); })
+        .on("click", (e, d) => { pick(d.p); refresh(); });
+      pcImp = svg.append("g").attr("pointer-events", "none").selectAll("circle").data(P.flatMap(d => d.imp.map(j => ({ d, j })))).join("circle")
+        .attr("cx", o => px(o.j)).attr("cy", o => py[o.j](o.d.x[o.j])).attr("r", 4.5).attr("fill", "#fff").attr("stroke-width", 1.8).attr("stroke", o => col(o.d));
+    }
+
+    // ---------- penyegaran gaya (seleksi + hover) di semua tampilan
+    function refresh() {
+      const on = active.size > 0, has = d => !on || active.has(d.p), hv = d => d.p === hover;
+      biPts.attr("opacity", d => has(d) ? .92 : .14).attr("stroke", d => hv(d) ? "#000" : "#fff").attr("stroke-width", d => hv(d) ? 2.5 : 1.2);
+      pcLines.attr("stroke-opacity", d => hv(d) ? 1 : has(d) ? (on ? .9 : .5) : .06).attr("stroke-width", d => hv(d) ? 3.5 : has(d) ? (on ? 2.2 : 1.4) : 1);
+      pcImp.attr("opacity", o => has(o.d) ? 1 : .15);
+      if (on) { pcLines.filter(has).raise(); pcImp.raise(); }
+      const lab = P.filter(d => d.out || d.p === state.sel || d.p === hover || (on && active.size <= 8 && active.has(d.p)));
+      biLab.selectAll("text").data(lab, d => d.p).join("text").attr("font-size", 11).attr("dy", "0.35em")
+        .attr("x", d => biX(d.pc[biCx]) + (biX(d.pc[biCx]) > W - 120 ? -1 : 1) * (rad(d.pop) + 4)).attr("y", d => biY(d.pc[biCy]))
+        .attr("text-anchor", d => biX(d.pc[biCx]) > W - 120 ? "end" : "start").style("paint-order", "stroke").style("stroke", "#fff").style("stroke-width", "3px")
+        .attr("opacity", d => has(d) ? 1 : .3).text(d => d.n);
+      chips.classed("on", d => on && active.size === d.set.length && d.set.every(p => active.has(p)));
+      const nm = [...active].map(p => P.find(d => d.p === p).n);
+      selNote.text(on ? `Terpilih ${active.size} provinsi: ${nm.slice(0, 12).join(", ")}${nm.length > 12 ? `, dan ${nm.length - 12} lainnya` : ""}.`
+        : "Belum ada seleksi. Seret kotak pada biplot, seret rentang pada sumbu parallel coordinates, atau klik label klaster; semua tampilan akan menyorot provinsi yang sama.");
+    }
+
+    // ---------- narasi scroll: tiap kelompok / pencilan menjadi satu langkah
+    STEP.mv = (type, c) => setActive(new Set(type === "cl" ? P.filter(d => d.cl === c).map(d => d.p) : type === "out" ? P.filter(d => d.out).map(d => d.p) : []), "chip");
+    function writeSteps() {
+      Object.assign(NUM, { kc: KC, outNames: lj(P.filter(d => d.out).map(d => d.n)) });
+      const st = (html, fn) => `<div class="step" data-fn='${JSON.stringify(fn)}'><div class="card">${html}</div></div>`;
+      const idx = d3.range(nV), pole = (c, s) => idx.filter(j => s * L[j][c] >= .5).sort((a, b) => s * L[b][c] - s * L[a][c]).slice(0, 3).map(em).join(", ");
+      const axes = [0, 1].map(c => { const p = pole(c, 1), n = pole(c, -1); return `<b>PC${c + 1}</b>: ${p ? "ke kanan/atas = lebih tinggi pada " + p : ""}${p && n ? "; " : ""}${n ? "ke kiri/bawah = lebih tinggi pada " + n : ""}.`; }).join(" ");
+      const s7 = [st(`Satu titik = satu provinsi, dari ${nV} indikator pariwisata 2025. Dua sumbu pertama merangkum <b>${pct(R[0] + R[1])}</b> ragam data, sehingga titik yang berdekatan berarti profil serupa. ${axes}`, ["mv", "none"])];
+      const s8 = [st(`Kini semua indikator terlihat sekaligus: satu garis = satu provinsi, satu sumbu = satu indikator. Tanpa seleksi, garis saling menumpuk; mari kita sorot per kelompok. Anda juga bisa menyeret rentang pada sumbu mana pun.`, ["mv", "none"])];
+      d3.range(KC).forEach(c => {
+        const { hi, lo } = driversText(c), mem = P.filter(d => d.cl === c).map(d => d.n);
+        s7.push(st(`<b>${kl(c)}</b> (${mem.length} provinsi): ${mem.length > 10 ? mem.slice(0, 8).join(", ") + `, dan ${mem.length - 8} lainnya` : lj(mem)}.`, ["mv", "cl", c]));
+        s8.push(st(`<b>${kl(c)}</b>: ${hi.length ? "garis tinggi pada " + hi.map(em).join(", ") : ""}${hi.length && lo.length ? "; " : ""}${lo.length ? "rendah pada " + lo.map(em).join(", ") : ""}${hi.length || lo.length ? "" : "mendekati rata-rata pada semua indikator"}.`, ["mv", "cl", c]));
+      });
+      const out = P.filter(d => d.out).sort((a, b) => b.d - a.d), im = P.filter(d => d.imp.length);
+      const od = out.map(d => `${d.n} (${Math.abs(d.top[1]) >= 2 ? `menonjol pada ${em(d.top[0])}, z ${sgn(d.top[1])}` : "menyimpang tipis pada banyak indikator"})`).join("; ");
+      s7.push(st(`<b>Pencilan</b>: ${od}. Mereka terpisah dari kelompoknya, sehingga pola umum tidak otomatis berlaku bagi mereka.`, ["mv", "out"]));
+      s8.push(st(`<b>Pencilan</b> tampak sebagai garis yang menyimpang dari kerumunan. Pola nasional tidak otomatis berlaku bagi mereka.${im.length ? `<br><small>* Sel kosong pada tabel BPS diisi rata-rata provinsi Papua lain: ${im.map(d => `${d.n} (${d.imp.map(j => V[j].l).join("; ")})`).join("; ")}. Titik putih menandai nilai itu.</small>` : ""}`, ["mv", "out"]));
+      d3.select("#mvsteps7").html(s7.join("")); d3.select("#mvsteps8").html(s8.join(""));
+    }
+
+    xs.on("change", () => { setActive(new Set(), "reset"); drawBi(); refresh(); });
+    ys.on("change", () => { setActive(new Set(), "reset"); drawBi(); refresh(); });
+    arrCk.on("change", () => d3.select(biBox.node().arrows.node()).style("display", arrCk.property("checked") ? null : "none"));
+    ordSel.on("change", () => { setActive(new Set(), "reset"); drawPc(); refresh(); });
+    drawBi(); drawPc(); refresh(); writeSteps();
+  })();
+
+  // ================= Scrollytelling: langkah narasi di kanan menggerakkan grafik di kiri =================
+  document.querySelectorAll(".step .card, .lead, .ccard p").forEach(c => { c.innerHTML = c.innerHTML.replace(/\{\{(\w+)\}\}/g, (m, k) => NUM[k] ?? "-"); });
+  const runStep = el => { try { const [n, ...a] = JSON.parse(el.dataset.fn || "[]"); if (STEP[n]) STEP[n](...a); } catch (e) { console.error(e); } };
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target, box = el.parentNode;
+    if (box.__cur === el) return;
+    box.querySelectorAll(".step.on").forEach(s => s.classList.remove("on"));
+    el.classList.add("on"); box.__cur = el; runStep(el);
+  }), { rootMargin: "-40% 0px -40% 0px" });
+  document.querySelectorAll(".step").forEach(s => io.observe(s));
+
+}).catch(err => document.body.insertAdjacentHTML("afterbegin",
+  `<div class="err">Gagal memuat data (${err}). Jalankan lewat server lokal, bukan dengan klik dua kali berkas HTML (lihat README).</div>`));
+</script>
+</body>
+</html>
